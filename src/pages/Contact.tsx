@@ -61,42 +61,29 @@ const Contact = () => {
     }
   ];
 
-  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
-    setFormData({
-      ...formData,
-      [e.target.name]: e.target.value
-    });
-  };
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+  e.preventDefault();
+  const form = new FormData(e.target as HTMLFormElement);
 
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    
-    // Basic validation
-    if (!formData.name || !formData.email || !formData.message) {
-      toast({
-        title: "Please fill in required fields",
-        description: "Name, email, and message are required.",
-        variant: "destructive"
-      });
-      return;
-    }
+  const res = await fetch("https://formspree.io/f/mdkdeqjq", {
+    method: "POST",
+    body: form,
+    headers: {
+      Accept: "application/json",
+    },
+  });
 
-    // Simulate form submission
-    toast({
+  toast({
       title: "Message sent successfully!",
       description: "We'll get back to you within 24 hours.",
     });
+};
 
-    // Reset form
-    setFormData({
-      name: '',
-      email: '',
-      company: '',
-      phone: '',
-      service: '',
-      message: ''
-    });
-  };
+
+const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+  const { name, value } = e.target;
+  setFormData(prev => ({ ...prev, [name]: value }));
+};
 
   return (
     <div className="py-20">
